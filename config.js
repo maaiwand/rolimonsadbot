@@ -2,15 +2,15 @@ require('dotenv').config();
 general={
     rwait_min: 890050, 
     rwait_max: 920000,
-    archive_tm: true,
+    archive_tm: false,
     display_on: false
 }
 users=[
     {
-        Roli_cookie: process.env.login,
-        UserID: ID,
+        Roli_cookie: "",
+        UserID: ENTER YOUR ROBLOX ID HERE,
         RoliAd: {
-            item_ids: [],
+            item_ids: [ENTER YOUR ITEM IDS HERE],
             r_items: [], 
             r_tags: ["demand"], 
             posttop: false, 
