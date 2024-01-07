@@ -7,8 +7,8 @@ general={
 }
 users=[
     {
-        Roli_cookie: process.env.login,
-        UserID: 3450002500,
+        Roli_cookie: process.env.roli,
+        UserID: ID,
         RoliAd: {
             item_ids: [987022351], 
             r_items: [], 
