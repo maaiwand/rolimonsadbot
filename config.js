@@ -2,7 +2,7 @@ require('dotenv').config();
 general={
     rwait_min: 890050, 
     rwait_max: 930000,
-    archive_tm: true,
+    archive_tm: false,
     display_on: false
 }
 users=[
@@ -13,7 +13,7 @@ users=[
             item_ids: [987022351], 
             r_items: [], 
             r_tags: ["demand"], 
-            posttop: false, 
+            posttop: true, 
             restate: false 
         },
         Webhook: {
