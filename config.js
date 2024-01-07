@@ -1,16 +1,16 @@
 require('dotenv').config();
 general={
     rwait_min: 890050, 
-    rwait_max: 920000,
-    archive_tm: false,
+    rwait_max: 930000,
+    archive_tm: true,
     display_on: false
 }
 users=[
     {
-        Roli_cookie: process.env.roli,
-        UserID: process.env.ID,
+        Roli_cookie: process.env.login,
+        UserID: 3450002500,
         RoliAd: {
-            item_ids: [987022351],
+            item_ids: [987022351], 
             r_items: [], 
             r_tags: ["demand"], 
             posttop: false, 
