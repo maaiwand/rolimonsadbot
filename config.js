@@ -7,8 +7,8 @@ general={
 }
 users=[
     {
-        Roli_cookie: "",
-        UserID: ENTER YOUR ROBLOX ID HERE,
+        Roli_cookie: process.env.roli,
+        UserID: process.env.ID,
         RoliAd: {
             item_ids: [ENTER YOUR ITEM IDS HERE],
             r_items: [], 
