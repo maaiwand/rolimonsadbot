@@ -129,11 +129,11 @@ const send_wr = async (success, o_items, r_items, r_tags, p_config) => {
         "color": p_config.Webhook.webhook_color,
         "fields": [
           {
-            "name": `***${player_name}'s Roli-Ad  📊:***\n`,
-            "value": `***Offering  📡:***${items_n}\n(V: ${total_offerv})\n***Asking  📲:*** ${fixreq}\n(V: ${total_request}) \n***Tags:***\n${fixtags}`
+            "name": `***${player_name}'s Roli-Ad 📊:***\n`,
+            "value": `***Offering 📡:***${items_n}\n(V: ${total_offerv})\n***Asking 📲:*** ${fixreq}\n(V: ${total_request}) \n***Tags:***${fixtags}`
           },
           {
-            "name": `CAPR  🔁:`,
+            "name": `CAPR 🔁:`,
             "value": loops.toString()
           }
         ],
@@ -175,27 +175,30 @@ const get_args = async (p_config) => {
   });
 
   // Check for valid trades
-  if (outbounds) {
-    for (const trade of outbounds) {
-      const viewed_t = await fetch('https://trades.roblox.com/v1/trades/' + trade.id, {
-        method: "GET",
-        headers: { 'Content-Type': 'application/json', "cookie": ".ROBLOSECURITY=" + p_config.rbx_cookie }
-      }).then(res => res.json()).then(json => json.offers);
+  let validTradeFound = false;
+  for (const trade of outbounds) {
+    const viewed_t = await fetch('https://trades.roblox.com/v1/trades/' + trade.id, {
+      method: "GET",
+      headers: { 'Content-Type': 'application/json', "cookie": ".ROBLOSECURITY=" + p_config.rbx_cookie }
+    }).then(res => res.json()).then(json => json.offers);
 
-      // Check if items are still in player's inventory
-      const viewed_i = viewed_t[0].userAssets.map(asset => asset.assetId);
-      if (viewed_i.every(id => f_inv["id" + id])) {
-        ci_list.offer = viewed_i;
-        ci_list.request = viewed_t[1].userAssets.map(asset => asset.assetId);
-        break;
-      }
+    // Check if items are still in player's inventory
+    const viewed_i = viewed_t[0].userAssets.map(asset => asset.assetId);
+    if (viewed_i.every(id => f_inv["id" + id])) {
+      ci_list.offer = viewed_i;
+      ci_list.request = viewed_t[1].userAssets.map(asset => asset.assetId);
+      validTradeFound = true;
+      break;
     }
   }
 
+  // If no valid trade found, return default values
+  if (!validTradeFound) {
+    return { "o_items": p_config.RoliAd.item_ids, "r_items": p_config.RoliAd.r_items, "r_tags": p_config.RoliAd.r_tags };
+  }
+
   // Return arguments
-  return ci_list.offer.length < 1
-    ? { "o_items": p_config.RoliAd.item_ids, "r_items": p_config.RoliAd.r_items, "r_tags": p_config.RoliAd.r_tags }
-    : { "o_items": ci_list.offer, "r_items": ci_list.request, "r_tags": [] };
+  return { "o_items": ci_list.offer, "r_items": ci_list.request, "r_tags": [] };
 };
 
 // Post ad
