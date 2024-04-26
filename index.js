@@ -198,7 +198,14 @@ var get_args = async function(p_config){
     .then(json => outbounds=json.data);
  
     // Gets last invalid outbound
+    if (outbounds) {
     for (let i=0; i < outbounds.length; i++) {
+        // Your code using outbounds[i]
+    }
+} else {
+    console.error("outbounds is undefined");
+    // Handle the case where outbounds is undefined (optional)
+}
       var trade = outbounds[i]
       var viewed_t
       var viewed_i = new Array();
