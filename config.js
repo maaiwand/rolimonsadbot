@@ -10,11 +10,11 @@ users=[
         Roli_cookie: process.env.roli,
         UserID: 3450002500,
         RoliAd: {
-            item_ids: ['6807138720'], 
-            r_items: ['20573078'], 
+            item_ids: [], 
+            r_items: [], 
             r_tags: ["demand"], 
-            posttop: true, 
-            restate: false 
+            posttop: false, 
+            restate: true 
         },
         Webhook: {
             webhook_url: process.env.webhook, 
