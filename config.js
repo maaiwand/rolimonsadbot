@@ -10,8 +10,8 @@ users=[
         Roli_cookie: process.env.roli,
         UserID: 3450002500,
         RoliAd: {
-            item_ids: [20573078], 
-            r_items: [], 
+            item_ids: [6807138720], 
+            r_items: [20573078], 
             r_tags: ["demand"], 
             posttop: false, 
             restate: false 
