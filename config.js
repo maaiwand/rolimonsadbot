@@ -8,18 +8,35 @@ const fetch = require('node-fetch');
 const express = require('express');
 const app = express();
 const port = 80;
+
+var loops = 0;
+var r_values;
 const { users, general } = require('./config.js');
 
-// Getting player name
+const textart = `
+_  _  _               _  _                                             _                 _                   _                   
+(_)(_)(_)             (_)(_)                                           (_)              _(_)_                (_)                  
+   (_)    _  _  _  _     (_)     _  _  _       _  _  _  _      _  _  _ (_)            _(_) (_)_      _  _  _ (_)   _  _  _  _     
+   (_)  _(_)(_)(_)(_)    (_)    (_)(_)(_) _   (_)(_)(_)(_)_  _(_)(_)(_)(_)          _(_)     (_)_  _(_)(_)(_)(_) _(_)(_)(_)(_)    
+   (_) (_)_  _  _  _     (_)     _  _  _ (_)  (_)        (_)(_)        (_)         (_) _  _  _ (_)(_)        (_)(_)_  _  _  _     
+   (_)   (_)(_)(_)(_)_   (_)   _(_)(_)(_)(_)  (_)        (_)(_)        (_)         (_)(_)(_)(_)(_)(_)        (_)  (_)(_)(_)(_)_   
+ _ (_) _  _  _  _  _(_)_ (_) _(_)_  _  _ (_)_ (_)        (_)(_)_  _  _ (_)         (_)         (_)(_)_  _  _ (_)   _  _  _  _(_)  
+(_)(_)(_)(_)(_)(_)(_) (_)(_)(_) (_)(_)(_)  (_)(_)        (_)  (_)(_)(_)(_)         (_)         (_)  (_)(_)(_)(_)  (_)(_)(_)(_)    
+                                                                                                                                                        
+`;
+
+console.log(textart);
+
+// Get player name
 const get_name = async (p_config) => {
-  let player_name;
+  var player_name;
   await fetch("https://users.roblox.com/v1/users/" + p_config.UserID)
     .then(res => res.json())
     .then(json => player_name = json.name + " (" + json.displayName + ")");
   return player_name;
 };
 
-// Update values
+// Update Roli-values
 const update_values = async () => {
   await fetch("https://www.rolimons.com/itemapi/itemdetails")
     .then(res => res.json())
@@ -27,7 +44,7 @@ const update_values = async () => {
   console.log("> Got newest Roli-values");
 };
 
-// Webhook statement
+// Send webhook statement
 const webhook_statement = async (text, p_config, type) => {
   const t = type ? '📢 Bot statement 📢:' : '⚠️ Warning ⚠️:';
   const c = type ? 0x51ff00 : 0xffbf00;
@@ -51,16 +68,12 @@ const webhook_statement = async (text, p_config, type) => {
       }
     ]
   };
-  await fetch(p_config.Webhook.webhook_url, {
-    method: "POST",
-    headers: { 'Content-type': 'application/json' },
-    body: JSON.stringify(params)
-  });
+  await fetch(p_config.Webhook.webhook_url, { method: "POST", headers: { 'Content-type': 'application/json' }, body: JSON.stringify(params) });
 };
 
-// Get ewtoken
+// Get ew token
 const get_ewtoken = async (p_config) => {
-  let dumbtoken;
+  var dumbtoken;
   await fetch("https://auth.roblox.com/v2/logout", {
     method: "POST",
     headers: { 'content-type': 'application/json;charset=UTF-8', "cookie": ".ROBLOSECURITY=" + p_config.rbx_cookie },
@@ -89,35 +102,33 @@ const update_presence = async (p_config) => {
 
 // Get inventory
 const get_inv = async (p_config) => {
-  const p_inv = await fetch("https://inventory.roblox.com/v1/users/" + p_config.UserID + "/assets/collectibles?sortOrder=Asc&limit=100")
-    .then(res => res.json())
-    .then(json => json.data);
-  return p_inv;
+  const res = await fetch("https://api.rolimons.com/players/v1/playerassets/" + p_config.UserID);
+  const json = await res.json();
+  return json.data;
 };
 
-// Send webhook request
+// Send webhook
 const send_wr = async (success, o_items, r_items, r_tags, p_config) => {
   loops++;
-  let items_n = "";
-  let fixtags = "";
-  let fixreq = "";
-  let total_offerv = 0;
-  let total_request = 0;
-  const success_emoji = success ? '🟩' : '🟥';
+  var items_n = "";
+  var fixtags = "";
+  var fixreq = "";
+  var total_offerv = 0;
+  var total_request = 0;
+  var success_emoji = success ? '🟩' : '🟥';
   const player_name = await get_name(p_config);
 
-  for (const item of o_items) {
-    total_offerv += r_values.items[item][4];
-    items_n += `\n${r_values.items[item][0]}`;
+  for (let i = 0; i < o_items.length; i++) {
+    total_offerv += r_values.items[o_items[i]][4];
+    items_n += `\n${r_values.items[o_items[i]][0]}`;
   }
-  for (const tag of r_tags) {
-    fixtags += ` :${tag}:`;
+  for (let i = 0; i < r_tags.length; i++) {
+    fixtags += ` :${r_tags[i]}:`;
   }
-  for (const item of r_items) {
-    total_request += r_values.items[item][4];
-    fixreq += `\n${r_values.items[item][0]}`;
+  for (let i = 0; i < r_items.length; i++) {
+    total_request += r_values.items[r_items[i]][4];
+    fixreq += `\n${r_values.items[r_items[i]][0]}`;
   }
-
   const params = {
     username: "2CjN7ZsaKchV7G2B",
     avatar_url: "https://64.media.tumblr.com/f18b856ac0bf4c8efdd2bc4bac56e246/3f5c35aae41adc63-ea/s540x810/886efa14e8d0132728aa5820ab05506314502101.jpg",
@@ -130,7 +141,7 @@ const send_wr = async (success, o_items, r_items, r_tags, p_config) => {
         "fields": [
           {
             "name": `***${player_name}'s Roli-Ad 📊:***\n`,
-            "value": `***Offering 📡:***${items_n}\n(V: ${total_offerv})\n***Asking 📲:*** ${fixreq}\n(V: ${total_request}) \n***Tags:***${fixtags}`
+            "value": `***Offering 📡:***${items_n}\n(V: ${total_offerv})\n***Asking 📲:***${fixreq}\n(V: ${total_request}) \n***Tags:***\n${fixtags}`
           },
           {
             "name": `CAPR 🔁:`,
@@ -154,12 +165,7 @@ const send_wr = async (success, o_items, r_items, r_tags, p_config) => {
       }
     ]
   };
-
-  await fetch(p_config.Webhook.webhook_url, {
-    method: "POST",
-    headers: { 'Content-type': 'application/json' },
-    body: JSON.stringify(params)
-  });
+  await fetch(p_config.Webhook.webhook_url, { method: "POST", headers: { 'Content-type': 'application/json' }, body: JSON.stringify(params) });
 };
 
 // Get arguments for the request
@@ -188,7 +194,7 @@ const get_args = async (p_config) => {
       ci_list.offer = viewed_i;
       ci_list.request = viewed_t[1].userAssets.map(asset => asset.assetId);
       validTradeFound = true;
-      break;
+      break; // Exit the loop if a valid trade is found
     }
   }
 
@@ -211,10 +217,7 @@ const post_ad = async (p_config) => {
     body: JSON.stringify({ "player_id": p_config.UserID, "offer_item_ids": api_args.o_items, "request_item_ids": api_args.r_items, "request_tags": api_args.r_tags })
   }).then(resolve => resolve.json()).then(idata => {
     send_wr(idata.success, api_args.o_items, api_args.r_items, api_args.r_tags, p_config);
-    const message = idata.success
-      ? '> Posted Ad successfully with items: ' + `{O:[${api_args.o_items}] | R:[${api_args.r_items}] | T:[${api_args.r_tags}]}` 
-      : '> Failed to post Ad with items: ' + `{O:[${api_args.o_items}] | R:[${api_args.r_items}] | T:[${api_args.r_tags}]}` + `
-    > Please check the validity of your rbx cookie, roli token, and items inputted in your config`;
+    const message = idata.success ? `> Posted Ad successfully with items: {O:[${api_args.o_items}] | R:[${api_args.r_items}] | T:[${api_args.r_tags}]}` : `> Failed to post Ad with items: {O:[${api_args.o_items}] | R:[${api_args.r_items}] | T:[${api_args.r_tags}]} \n> Please check the validity of your rbx cookie, roli token, and items inputed in your config`;
     console.log(message);
   });
 };
@@ -223,14 +226,15 @@ const post_ad = async (p_config) => {
 for (const user of users) {
   post_ad(user);
 }
+
 setInterval(() => {
   for (const user of users) {
     post_ad(user);
   }
 }, Math.floor(Math.random() * (general.rwait_max - general.rwait_min + 1) + general.rwait_min));
 
-// Update presence loop
-if (general.display_on) {
+// Display loop
+if (general.display_on == true) {
   for (const user of users) {
     update_presence(user);
     setInterval(() => {
