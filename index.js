@@ -37,7 +37,7 @@ await fetch("https://users.roblox.com/v1/users/"+p_config.UserID)
 
 // why don't u have docs on the table??
 var update_values = async function(){
-  await fetch("https://api.rolimons.com/items/v1/itemdetails")
+  await fetch("https://api.rolimons.com/items/v1/itemdetails/")
   .then(res => res.json())
   .then(json => r_values=json)
   console.log("> Got newest Roli-values")
@@ -252,28 +252,37 @@ var get_args = async function(p_config){
 };
 
 //ykiyk
-var post_ad = async function(p_config){
+var post_ad = async function(p_config) {
   await update_values();
   var api_args = await get_args(p_config);
-  
-  fetch('https://api.rolimons.com/tradeads/v1/createad',{
-    method:"POST",
-    headers: { 'Content-Type': 'application/json',"cookie": p_config.Roli_cookie},
-    body: JSON.stringify({"player_id":p_config.UserID,"offer_item_ids":api_args.o_items,"request_item_ids":api_args.r_items,"request_tags":api_args.r_tags}) 
+
+  fetch('https://api.rolimons.com/tradeads/v1/createad', {
+    method: "POST",
+    headers: {
+      'Content-Type': 'application/json',
+      "cookie": p_config.Roli_cookie
+    },
+    body: JSON.stringify({
+      "player_id": p_config.UserID,
+      "offer_item_ids": api_args.o_items,
+      "request_item_ids": api_args.r_items,
+      "request_tags": api_args.r_tags
+    })
   }).then(response => {
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
+    if (response.status === 201) {
+      return response.json();
+    } else {
+      throw new Error('Failed to post ad. Status: ' + response.status);
     }
-    return response.json();
   }).then(idata => {
     send_wr(idata.success, api_args.o_items, api_args.r_items, api_args.r_tags, p_config);
-    var message = idata.success ? '> Posted Ad successfully with items: ' + '{O:['+ api_args.o_items + '] | R:[' + api_args.r_items + `] | T:[` + api_args.r_tags + `]}` : '> Failed to post Ad with items: ' + '{O:['+ api_args.o_items + '] | R:[' + api_args.r_items + `] | T:[` + api_args.r_tags + `]}` + `
-    > Please check the validity of your rbx cookie, roli token, and items inputed in your config`;
+    var message = '> Posted Ad successfully with items: ' + '{O:[' + api_args.o_items + '] | R:[' + api_args.r_items + `] | T:[` + api_args.r_tags + `]}`;
     console.log(message);
   }).catch(error => {
     console.error('There was a problem with the fetch operation:', error);
   });
 };
+
 
 // material gorl loop
 for (let i=0; i < users.length; i++) {
