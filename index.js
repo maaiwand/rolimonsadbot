@@ -37,7 +37,7 @@ await fetch("https://users.roblox.com/v1/users/"+p_config.UserID)
 
 // why don't u have docs on the table??
 var update_values = async function(){
-  await fetch("https://www.rolimons.com/itemapi/itemdetails")
+  await fetch("https://api.rolimons.com/tradeads/v1/createad")
   .then(res => res.json())
   .then(json => r_values=json)
   console.log("> Got newest Roli-values")
