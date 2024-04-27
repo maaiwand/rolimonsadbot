@@ -100,7 +100,7 @@ var update_presence = async function(p_config){
 
 // thank you for not having me look through all the item catagorys 
 var get_inv = async function(p_config){
-  await fetch("https://api.rolimons.com/items/v1/itemdetails"+p_config.UserID)
+  await fetch("https://api.rolimons.com/items/v1/itemdetails/"+p_config.UserID)
   var p_inv;
   await fetch("https://inventory.roblox.com/v1/users/"+p_config.UserID+"/assets/collectibles?sortOrder=Asc&limit=100")
   .then(res => res.json())
