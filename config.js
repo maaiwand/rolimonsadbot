@@ -11,7 +11,7 @@ users=[
         UserID: 3450002500,
         RoliAd: {
             item_ids: [], 
-            r_items: [], 
+            r_items: [7636350], 
             r_tags: ["demand","upgrade"], 
             posttop: true, 
             restate: false 
